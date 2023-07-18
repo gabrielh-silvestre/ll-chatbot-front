@@ -1,0 +1,32 @@
+.chat_links_container,
+.link_list_container {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.link_list_container > li {
+  margin: 0.5rem 0;
+  padding: 0.5rem 1rem;
+
+  border-radius: 4px;
+  background: #e7e7e7;
+
+  list-style: none;
+
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+
+  &:hover {
+    background: #d7d7d7;
+  }
+
+  &:active {
+    background: #c7c7c7;
+  }
+}
+
+.link_list_container a {
+  text-decoration: none;
+}

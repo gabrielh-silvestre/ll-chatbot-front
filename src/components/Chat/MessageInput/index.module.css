@@ -1,0 +1,39 @@
+.message_input_container {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+}
+
+.form_container {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: flex-end;
+}
+
+.form_container > label {
+  text-align: start;
+}
+
+.form_container input {
+  margin-left: 1rem;
+
+  outline: none;
+
+  padding: 8px 4px;
+
+  border: 1px solid #e7e7e7;
+  border-left: 0;
+  border-bottom-left-radius: 4px;
+}
+
+.form_container button {
+  outline: none;
+  border: none;
+  border-radius: 4px;
+
+  margin-top: 0.5rem;
+  padding: 8px 4px;
+
+  background: #0bda5ab7;
+}
