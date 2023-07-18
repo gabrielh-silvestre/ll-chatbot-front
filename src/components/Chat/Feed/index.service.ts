@@ -1,3 +1,4 @@
+import { sleep } from '../../../utils/helpers';
 import type {
   BotStore,
   ChatLink,
@@ -81,46 +82,64 @@ const AUTHOR_INPUTS: MessageInput[] = [
 
 export const botActionProvider = async (
   message: Message,
-  sendMessage: BotStore['sendBotMessage'],
-  saveCoversation: () => Promise<any>
+  botStore: BotStore,
+  endCoversation: () => Promise<any>
 ) => {
   if (message.fromBot) return;
 
   const isCase = (regexs: RegExp[], text: string) =>
     regexs.some((regex) => regex.test(text));
 
+  const isAnyCaseWithoutAuthor = (regexs: RegExp[], text: string) =>
+    regexs.some((regex) => regex.test(text)) && botStore.currentAuthor === null;
+
   switch (true) {
-    case isCase(ENDINGS, message.text):
-      sendMessage('Goodbye!');
-      await saveCoversation();
-      break;
-
-    case isCase(DEMANDS, message.text):
-      sendMessage('I will get back to you soon.');
-      break;
-
-    case isCase(GREETINGS, message.text):
-      sendMessage(
-        'Hello there! I am a bot and I am here to help you with loans.'
-      );
-
-      sendMessage(
+    case isAnyCaseWithoutAuthor(
+      [...LOAN, ...DEMANDS, ...ENDINGS],
+      message.text
+    ):
+      botStore.sendBotMessage(
         'Before we start, please login or sign up.',
         'input',
         AUTHOR_INPUTS
       );
       break;
 
-    case isCase(LOAN, message.text):
-      sendMessage(
+    case isCase(LOAN, message.text) && botStore.currentAuthor !== null:
+      botStore.sendBotMessage(
         'I can help you with that.',
         'optionList',
-        LOAN_OPTIONS(sendMessage)
+        LOAN_OPTIONS(botStore.sendBotMessage)
       );
       break;
 
+    case isCase(DEMANDS, message.text) && botStore.currentAuthor !== null:
+      botStore.sendBotMessage('I will get back to you soon.');
+      break;
+
+    case isCase(ENDINGS, message.text):
+      botStore.sendBotMessage('Goodbye! Hope to see you soon!');
+      await sleep(1500); // Wait for clear chatbot
+
+      await endCoversation();
+      break;
+
+    case isCase(GREETINGS, message.text):
+      botStore.sendBotMessage(
+        'Hello there! I am a bot and I am here to help you with loans.'
+      );
+
+      if (botStore.currentAuthor === null) {
+        botStore.sendBotMessage(
+          'Before we start, please login or sign up.',
+          'input',
+          AUTHOR_INPUTS
+        );
+      }
+      break;
+
     default:
-      sendMessage(
+      botStore.sendBotMessage(
         'Sorry, I did not understand that. To initiate a conversation, type "hello".'
       );
       break;

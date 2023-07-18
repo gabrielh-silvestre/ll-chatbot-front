@@ -10,6 +10,8 @@ export const useBotStore = create<BotStore>((set) => ({
   conversations: [],
   currentConversation: null,
 
+  currentAuthor: null,
+
   startConversation: (author) =>
     set((state) => {
       const newConversation = createNewConversation(
@@ -19,6 +21,7 @@ export const useBotStore = create<BotStore>((set) => ({
 
       return {
         ...state,
+        currentAuthor: author,
         conversations: [...state.conversations, newConversation],
         currentConversation: newConversation,
         anonymousMessages: [],
@@ -71,4 +74,12 @@ export const useBotStore = create<BotStore>((set) => ({
         },
       };
     }),
+
+  endConversation: () => {
+    set((state) => ({
+      ...state,
+      currentAuthor: null,
+      currentConversation: null,
+    }));
+  },
 }));

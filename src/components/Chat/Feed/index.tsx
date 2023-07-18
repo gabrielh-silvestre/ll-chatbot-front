@@ -27,12 +27,14 @@ type ChatFeedProps = {
 };
 
 export function ChatFeed({ authGateway, apiGateway }: ChatFeedProps) {
+  const botStore = useBotStore();
   const {
     anonymousMessages,
     currentConversation,
     sendBotMessage,
     startConversation,
-  } = useBotStore();
+    endConversation,
+  } = botStore;
 
   const allMessages = useMemo(
     () => [...anonymousMessages, ...(currentConversation?.messages ?? [])],
@@ -43,16 +45,18 @@ export function ChatFeed({ authGateway, apiGateway }: ChatFeedProps) {
     allMessages[allMessages.length - 1] ?? null
   );
 
+  const finish = async () => {
+    await apiGateway.saveConversation(currentConversation!); // only execute on "end" action
+
+    endConversation();
+  };
+
   useEffect(() => {
     const botWatch = async () => {
       if (!lastMessage) return;
 
       await sleep(1000); // 1s delay to add a more natural feel to the bot
-      await botActionProvider(
-        lastMessage,
-        sendBotMessage,
-        () => apiGateway.saveConversation(currentConversation!) // only execute on "end" action
-      );
+      await botActionProvider(lastMessage, botStore, finish);
     };
 
     void botWatch();

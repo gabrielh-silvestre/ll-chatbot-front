@@ -55,6 +55,8 @@ export interface BotStore {
   conversations: Conversation[];
   currentConversation: Conversation | null;
 
+  currentAuthor: Author | null;
+
   startConversation: (author: Author) => void;
   sendMessage: (
     message: string,
@@ -66,6 +68,8 @@ export interface BotStore {
     type?: MessageTypes,
     props?: (ChatOption | ChatLink | MessageInput)[]
   ) => void;
+
+  endConversation: () => void;
 }
 
 export interface MessageRender {
