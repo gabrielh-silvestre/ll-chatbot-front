@@ -8,14 +8,10 @@ type ChatOptionListProps = ChatMessageProps & {
   options: ChatOption[];
 };
 
-export function ChatOptionList({
-  text,
-  createdAt,
-  options,
-}: ChatOptionListProps) {
+export function ChatOptionList({ options, ...props }: ChatOptionListProps) {
   return (
     <div className={styles.option_container}>
-      <ChatMessage text={text} createdAt={createdAt} />
+      <ChatMessage {...props} />
 
       {options.map((item) => (
         <button

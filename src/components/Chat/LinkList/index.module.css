@@ -7,11 +7,7 @@
 }
 
 .link_list_container > li {
-  margin: 0.5rem 0;
-  padding: 0.5rem 1rem;
-
-  border-radius: 4px;
-  background: #e7e7e7;
+  margin: 0.8rem 0;
 
   list-style: none;
 
@@ -29,4 +25,9 @@
 
 .link_list_container a {
   text-decoration: none;
+
+  padding: 0.5rem 1rem;
+
+  border-radius: 4px;
+  background: #e7e7e7;
 }

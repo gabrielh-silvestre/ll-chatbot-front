@@ -1,3 +1,5 @@
+import { useEffect, useMemo, useState } from 'react';
+
 import type {
   LinkMessage,
   OptionMessage,
@@ -5,6 +7,7 @@ import type {
 } from '../../../utils/types';
 
 import { useBotStore } from '../../../store/botStore';
+import { botActionProvider } from './index.service';
 
 import { ChatInput } from '../Input';
 import { ChatMessage } from '../Message';
@@ -15,12 +18,32 @@ import { ChatMessageInput } from '../MessageInput';
 import styles from './index.module.css';
 
 export function ChatFeed() {
-  const { anonymousMessages, currentConversation } = useBotStore();
+  const { anonymousMessages, currentConversation, sendBotMessage } =
+    useBotStore();
 
-  const allMessages = [
-    ...anonymousMessages,
-    ...(currentConversation?.messages ?? []),
-  ];
+  const allMessages = useMemo(
+    () => [...anonymousMessages, ...(currentConversation?.messages ?? [])],
+    [anonymousMessages, currentConversation?.messages]
+  );
+
+  const [lastMessage, setLastMessage] = useState(
+    allMessages[allMessages.length - 1] ?? null
+  );
+
+  useEffect(() => {
+    const botWatch = () => {
+      if (!lastMessage) return;
+
+      botActionProvider(lastMessage, sendBotMessage);
+    };
+
+    botWatch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lastMessage]);
+
+  useEffect(() => {
+    setLastMessage(allMessages[allMessages.length - 1] ?? null);
+  }, [allMessages]);
 
   const markupMessages = allMessages.map((m) => {
     switch (m.type) {
