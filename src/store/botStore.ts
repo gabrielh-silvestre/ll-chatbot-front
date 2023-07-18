@@ -2,6 +2,8 @@ import { create } from 'zustand';
 
 import type { BotStore, Message } from '../utils/types';
 
+import { createNewConversation, createNewMessage } from '../utils/helpers';
+
 export const useBotStore = create<BotStore>((set) => ({
   anonymousMessages: [],
 
@@ -10,11 +12,10 @@ export const useBotStore = create<BotStore>((set) => ({
 
   startConversation: (author) =>
     set((state) => {
-      const newConversation = {
-        id: `${Math.floor(Math.random() * 5000)}`,
+      const newConversation = createNewConversation(
         author,
-        messages: state.anonymousMessages,
-      };
+        state.anonymousMessages
+      );
 
       return {
         ...state,
@@ -24,13 +25,10 @@ export const useBotStore = create<BotStore>((set) => ({
       };
     }),
 
-  sendMessage: (message) =>
+  sendMessage: (text, type, props) =>
     set((state) => {
-      const newMessage: Message = {
-        id: `${Math.floor(Math.random() * 5000)}`,
-        text: message,
-        createdAt: new Date(),
-      };
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      const newMessage: Message = createNewMessage(text, type, props as any);
 
       /* No conversation === Anonymous author */
       if (!state.currentConversation) {
