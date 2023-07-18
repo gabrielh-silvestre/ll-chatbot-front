@@ -25,5 +25,7 @@ module.exports = {
     '@typescript-eslint/no-non-null-assertion': 'off',
     '@typescript-eslint/no-misused-promises': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
+    'require-await': 'off',
+    '@typescript-eslint/require-await': 'off',
   },
 };

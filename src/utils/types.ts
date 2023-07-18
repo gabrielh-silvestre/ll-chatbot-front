@@ -30,7 +30,7 @@ export interface LinkMessage extends Message {
 
 export interface MessageInput {
   label: string;
-  value: string;
+  type: string;
 }
 
 export interface ChatInputMessage extends Message {
