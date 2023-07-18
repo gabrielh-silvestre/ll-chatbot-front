@@ -3,6 +3,7 @@ import type {
   ChatLink,
   ChatOption,
   Message,
+  MessageInput,
 } from '../../../utils/types';
 
 const GREETINGS = [/^hello/i, /good/i];
@@ -67,9 +68,21 @@ const LOAN_OPTIONS = (
   },
 ];
 
-export const botActionProvider = (
+const AUTHOR_INPUTS: MessageInput[] = [
+  {
+    label: 'Email',
+    type: 'text',
+  },
+  {
+    label: 'Password',
+    type: 'password',
+  },
+];
+
+export const botActionProvider = async (
   message: Message,
-  sendMessage: BotStore['sendBotMessage']
+  sendMessage: BotStore['sendBotMessage'],
+  saveCoversation: () => Promise<any>
 ) => {
   if (message.fromBot) return;
 
@@ -77,11 +90,27 @@ export const botActionProvider = (
     regexs.some((regex) => regex.test(text));
 
   switch (true) {
+    case isCase(ENDINGS, message.text):
+      sendMessage('Goodbye!');
+      await saveCoversation();
+      break;
+
+    case isCase(DEMANDS, message.text):
+      sendMessage('I will get back to you soon.');
+      break;
+
     case isCase(GREETINGS, message.text):
       sendMessage(
         'Hello there! I am a bot and I am here to help you with loans.'
       );
+
+      sendMessage(
+        'Before we start, please login or sign up.',
+        'input',
+        AUTHOR_INPUTS
+      );
       break;
+
     case isCase(LOAN, message.text):
       sendMessage(
         'I can help you with that.',
@@ -89,12 +118,7 @@ export const botActionProvider = (
         LOAN_OPTIONS(sendMessage)
       );
       break;
-    case isCase(ENDINGS, message.text):
-      sendMessage('Goodbye!');
-      break;
-    case isCase(DEMANDS, message.text):
-      sendMessage('I will get back to you soon.');
-      break;
+
     default:
       sendMessage(
         'Sorry, I did not understand that. To initiate a conversation, type "hello".'

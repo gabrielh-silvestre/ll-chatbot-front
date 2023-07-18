@@ -9,7 +9,7 @@ export function ChatInput() {
 
   const [text, setText] = useState<string>('');
 
-  const handleSend = () => {
+  const handleSend = async () => {
     const normalizedText = text.trim();
     if (normalizedText === '') return;
 

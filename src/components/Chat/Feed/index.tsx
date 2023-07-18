@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 
+import type { IApiGateway } from '../../../gateways/api/Api.gateway.interface';
+import type { IAuthGateway } from '../../../gateways/auth/Auth.gateway.interface';
 import type {
   LinkMessage,
   OptionMessage,
@@ -15,11 +17,22 @@ import { ChatOptionList } from '../OptionList';
 import { ChatLinkList } from '../LinkList';
 import { ChatMessageInput } from '../MessageInput';
 
+import { sleep } from '../../../utils/helpers';
+
 import styles from './index.module.css';
 
-export function ChatFeed() {
-  const { anonymousMessages, currentConversation, sendBotMessage } =
-    useBotStore();
+type ChatFeedProps = {
+  authGateway: IAuthGateway;
+  apiGateway: IApiGateway;
+};
+
+export function ChatFeed({ authGateway, apiGateway }: ChatFeedProps) {
+  const {
+    anonymousMessages,
+    currentConversation,
+    sendBotMessage,
+    startConversation,
+  } = useBotStore();
 
   const allMessages = useMemo(
     () => [...anonymousMessages, ...(currentConversation?.messages ?? [])],
@@ -31,19 +44,33 @@ export function ChatFeed() {
   );
 
   useEffect(() => {
-    const botWatch = () => {
+    const botWatch = async () => {
       if (!lastMessage) return;
 
-      botActionProvider(lastMessage, sendBotMessage);
+      await sleep(1000); // 1s delay to add a more natural feel to the bot
+      await botActionProvider(
+        lastMessage,
+        sendBotMessage,
+        () => apiGateway.saveConversation(currentConversation!) // only execute on "end" action
+      );
     };
 
-    botWatch();
+    void botWatch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lastMessage]);
 
   useEffect(() => {
     setLastMessage(allMessages[allMessages.length - 1] ?? null);
   }, [allMessages]);
+
+  const handleSubmit = async () => {
+    const newAuthor = await authGateway.signUp('test@test.com', 'test');
+
+    startConversation(newAuthor);
+
+    sendBotMessage('Thanks for signing up!');
+    sendBotMessage('Now we can continue, feel free to ask me about "loans"');
+  };
 
   const markupMessages = allMessages.map((m) => {
     switch (m.type) {
@@ -56,7 +83,7 @@ export function ChatFeed() {
           <ChatMessageInput
             key={m.id}
             {...(m as ChatInputMessage)}
-            onSubmit={console.log}
+            onSubmit={handleSubmit}
           />
         );
       default:

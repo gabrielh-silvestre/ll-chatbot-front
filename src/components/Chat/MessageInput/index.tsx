@@ -16,12 +16,17 @@ export function ChatMessageInput({
   onSubmit,
   ...props
 }: ChatMessageInputProps) {
-  const [newInputs, setNewInputs] = useState([...inputs]);
+  const [newInputs, setNewInputs] = useState(() =>
+    [...inputs].map((input) => ({
+      ...input,
+      value: '',
+    }))
+  );
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const normalizedInputs = inputs.map((input) => ({
+    const normalizedInputs = newInputs.map((input) => ({
       ...input,
       value: input.value.trim(),
     }));
@@ -30,10 +35,10 @@ export function ChatMessageInput({
   };
 
   const handleChange = (index: number, value: string) => {
-    const newInputs = [...inputs];
-    newInputs[index].value = value;
+    const copyInputs = [...newInputs];
+    copyInputs[index].value = value;
 
-    setNewInputs(newInputs);
+    setNewInputs(copyInputs);
   };
 
   return (
@@ -46,6 +51,7 @@ export function ChatMessageInput({
             {input.label}
 
             <input
+              type={input.type}
               value={input.value}
               onChange={({ target }) => handleChange(i, target.value)}
             />
