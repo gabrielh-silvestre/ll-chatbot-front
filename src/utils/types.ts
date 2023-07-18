@@ -61,6 +61,11 @@ export interface BotStore {
     type?: MessageTypes,
     props?: (ChatOption | ChatLink | MessageInput)[]
   ) => void;
+  sendBotMessage: (
+    message: string,
+    type?: MessageTypes,
+    props?: (ChatOption | ChatLink | MessageInput)[]
+  ) => void;
 }
 
 export interface MessageRender {

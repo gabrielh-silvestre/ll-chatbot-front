@@ -29,13 +29,14 @@ export const createNewConversation = (
 
 export const createNewMessage = (
   text: string,
+  fromBot = false,
   type?: MessageTypes,
   items?: (ChatOption | ChatLink | MessageInput)[]
 ): Message | OptionMessage | LinkMessage | ChatInputMessage => ({
   id: nanoid(),
   text,
   type,
-  fromBot: false,
+  fromBot,
   createdAt: new Date(),
   links: type === 'linkList' ? (items as ChatLink[]) : [],
   options: type === 'optionList' ? (items as ChatOption[]) : [],

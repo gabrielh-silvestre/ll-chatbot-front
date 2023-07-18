@@ -27,10 +27,35 @@ export const useBotStore = create<BotStore>((set) => ({
 
   sendMessage: (text, type, props) =>
     set((state) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      const newMessage: Message = createNewMessage(text, type, props as any);
+      const newMessage: Message = createNewMessage(
+        text,
+        false,
+        type,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        props as any
+      );
 
       /* No conversation === Anonymous author */
+      if (!state.currentConversation) {
+        return {
+          ...state,
+          anonymousMessages: [...state.anonymousMessages, newMessage],
+        };
+      }
+
+      return {
+        ...state,
+        currentConversation: {
+          ...state.currentConversation,
+          messages: [...state.currentConversation.messages, newMessage],
+        },
+      };
+    }),
+
+  sendBotMessage: (text, type, props) =>
+    set((state) => {
+      const newMessage = createNewMessage(text, true, type, props);
+
       if (!state.currentConversation) {
         return {
           ...state,
