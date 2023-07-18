@@ -78,7 +78,6 @@ export const useBotStore = create<BotStore>((set) => ({
   endConversation: () => {
     set((state) => ({
       ...state,
-      currentAuthor: null,
       currentConversation: null,
     }));
   },

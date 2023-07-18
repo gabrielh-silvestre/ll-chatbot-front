@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import styles from './App.module.css';
 import { LadingPage } from './pages/Landing';
+import { HistoryPage } from './pages/History';
 
 function App() {
   const [page, setPage] = useState(1);
@@ -23,7 +24,7 @@ function App() {
 
       <div className={styles.tab_content}>
         {page === 1 ? <LadingPage /> : null}
-        {page === 2 ? <div>History</div> : null}
+        {page === 2 ? <HistoryPage /> : null}
       </div>
     </div>
   );
