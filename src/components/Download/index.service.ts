@@ -6,7 +6,6 @@ export const transformToCSV = (data: Conversation[]) => {
   const header = 'Conversation;ID;Finished at';
 
   const csv = data.map((conversation) => {
-    console.log('conversation', conversation);
     const { author, id, finishedAt } = conversation;
 
     if (!finishedAt) return 'ERROR;ERROR;ERROR';

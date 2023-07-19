@@ -4,7 +4,6 @@ import type {
   ChatLink,
   ChatOption,
   Message,
-  MessageInput,
 } from '../../../utils/types';
 
 const GREETINGS = [/^hello/i, /good/i];
@@ -69,17 +68,6 @@ const LOAN_OPTIONS = (
   },
 ];
 
-const AUTHOR_INPUTS: MessageInput[] = [
-  {
-    label: 'Email',
-    type: 'text',
-  },
-  {
-    label: 'Password',
-    type: 'password',
-  },
-];
-
 export const botActionProvider = async (
   message: Message,
   botStore: BotStore,
@@ -100,8 +88,7 @@ export const botActionProvider = async (
     ):
       botStore.sendBotMessage(
         'Before we start, please login or sign up.',
-        'input',
-        AUTHOR_INPUTS
+        'auth'
       );
       break;
 
@@ -132,8 +119,7 @@ export const botActionProvider = async (
       if (botStore.currentAuthor === null) {
         botStore.sendBotMessage(
           'Before we start, please login or sign up.',
-          'input',
-          AUTHOR_INPUTS
+          'auth'
         );
       }
       break;

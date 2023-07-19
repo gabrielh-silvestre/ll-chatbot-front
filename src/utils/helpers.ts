@@ -2,13 +2,11 @@ import { nanoid } from 'nanoid';
 
 import type {
   Author,
-  ChatInputMessage,
   ChatLink,
   ChatOption,
   Conversation,
   LinkMessage,
   Message,
-  MessageInput,
   MessageTypes,
   OptionMessage,
 } from './types';
@@ -36,8 +34,8 @@ export const createNewMessage = (
   text: string,
   fromBot = false,
   type?: MessageTypes,
-  items?: (ChatOption | ChatLink | MessageInput)[]
-): Message | OptionMessage | LinkMessage | ChatInputMessage => ({
+  items?: (ChatOption | ChatLink)[]
+): Message | OptionMessage | LinkMessage => ({
   id: nanoid(),
   text,
   type,
@@ -45,7 +43,6 @@ export const createNewMessage = (
   createdAt: new Date(),
   links: type === 'linkList' ? (items as ChatLink[]) : [],
   options: type === 'optionList' ? (items as ChatOption[]) : [],
-  inputs: type === 'input' ? (items as MessageInput[]) : [],
 });
 
 /*

@@ -1,5 +1,7 @@
+import { genSaltSync, hashSync, compareSync } from 'bcryptjs';
+
 import type { IAuthGateway } from './Auth.gateway.interface';
-import type { Author } from '../../utils/types';
+import type { Author, User } from '../../utils/types';
 
 import { createNewAuthor } from '../../utils/helpers';
 
@@ -20,19 +22,33 @@ export class AuthLocalStorageGateway implements IAuthGateway {
   }
 
   async signIn(email: string, password: string): Promise<Author> {
-    const base64 = btoa(`${email}:${password}`);
-    const storagedUser = this.getStorage<string>();
+    const storagedUsers = this.getStorage<User[]>();
 
-    if (storagedUser !== base64) throw new Error('Invalid credentials');
+    const foundUser = storagedUsers?.find((user) => user.login === email);
+    if (!foundUser) throw new Error('Invalid credentials');
+
+    const isPasswordValid = compareSync(password, foundUser.password);
+    if (!isPasswordValid) throw new Error('Invalid credentials');
 
     return createNewAuthor(email);
   }
 
   async signUp(email: string, password: string): Promise<Author> {
-    const base64 = btoa(`${email}:${password}`);
+    const salt = genSaltSync(Math.floor(Math.random() * 10) + 5);
+    const hashedPassword = hashSync(password, salt);
 
-    this.setStorage(base64);
+    const storagedUsers = this.getStorage<User[]>();
 
+    if (storagedUsers) {
+      this.setStorage([
+        ...storagedUsers,
+        { login: email, password: hashedPassword },
+      ]);
+
+      return createNewAuthor(email);
+    }
+
+    this.setStorage([{ login: email, password: hashedPassword }]);
     return createNewAuthor(email);
   }
 

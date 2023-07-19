@@ -5,8 +5,8 @@ import type { IAuthGateway } from '../../../gateways/auth/Auth.gateway.interface
 import type {
   LinkMessage,
   OptionMessage,
-  ChatInputMessage,
   Conversation,
+  Author,
 } from '../../../utils/types';
 
 import { useBotStore } from '../../../store/botStore';
@@ -16,7 +16,7 @@ import { ChatInput } from '../Input';
 import { ChatMessage } from '../Message';
 import { ChatOptionList } from '../OptionList';
 import { ChatLinkList } from '../LinkList';
-import { ChatMessageInput } from '../MessageInput';
+import { ChatAuthForm } from '../AuthForm';
 
 import { sleep } from '../../../utils/helpers';
 
@@ -73,10 +73,22 @@ export function ChatFeed({ authGateway, apiGateway }: ChatFeedProps) {
     setLastMessage(allMessages[allMessages.length - 1] ?? null);
   }, [allMessages]);
 
-  const handleSubmit = async () => {
-    const newAuthor = await authGateway.signUp('test@test.com', 'test');
+  const handleSubmit = async (
+    email: string,
+    pass: string,
+    isSignIn: boolean
+  ) => {
+    let author: Author;
 
-    startConversation(newAuthor);
+    if (isSignIn) {
+      author = await authGateway.signIn(email, pass);
+    } else {
+      author = await authGateway.signUp(email, pass);
+    }
+
+    if (!author) throw new Error('Author not found');
+
+    startConversation(author);
 
     sendBotMessage('Thanks for signing up!');
     sendBotMessage('Now we can continue, feel free to ask me about "loans"');
@@ -88,12 +100,17 @@ export function ChatFeed({ authGateway, apiGateway }: ChatFeedProps) {
         return <ChatOptionList key={m.id} {...(m as OptionMessage)} />;
       case 'linkList':
         return <ChatLinkList key={m.id} {...(m as LinkMessage)} />;
-      case 'input':
+      case 'auth':
         return (
-          <ChatMessageInput
+          <ChatAuthForm
             key={m.id}
-            {...(m as ChatInputMessage)}
-            onSubmit={handleSubmit}
+            {...m}
+            signIn={({ email, password }) =>
+              handleSubmit(email, password, true)
+            }
+            signUp={({ email, password }) =>
+              handleSubmit(email, password, false)
+            }
           />
         );
       default:

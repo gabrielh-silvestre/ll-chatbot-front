@@ -1,4 +1,9 @@
-export type MessageTypes = 'optionList' | 'linkList' | 'input';
+export type User = {
+  login: string;
+  password: string;
+};
+
+export type MessageTypes = 'optionList' | 'linkList' | 'auth';
 
 export interface Message {
   id: string;
@@ -28,15 +33,6 @@ export interface LinkMessage extends Message {
   links: ChatLink[];
 }
 
-export interface MessageInput {
-  label: string;
-  type: string;
-}
-
-export interface ChatInputMessage extends Message {
-  inputs: MessageInput[];
-}
-
 export interface Author {
   id: string;
   name: string;
@@ -64,12 +60,12 @@ export interface BotStore {
   sendMessage: (
     message: string,
     type?: MessageTypes,
-    props?: (ChatOption | ChatLink | MessageInput)[]
+    props?: (ChatOption | ChatLink)[]
   ) => void;
   sendBotMessage: (
     message: string,
     type?: MessageTypes,
-    props?: (ChatOption | ChatLink | MessageInput)[]
+    props?: (ChatOption | ChatLink)[]
   ) => void;
 
   endConversation: () => void;
