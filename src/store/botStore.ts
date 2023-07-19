@@ -4,7 +4,7 @@ import type { BotStore, Message } from '../utils/types';
 
 import { createNewConversation, createNewMessage } from '../utils/helpers';
 
-export const useBotStore = create<BotStore>((set) => ({
+export const useBotStore = create<BotStore>((set, get) => ({
   anonymousMessages: [],
 
   conversations: [],
@@ -76,9 +76,12 @@ export const useBotStore = create<BotStore>((set) => ({
     }),
 
   endConversation: () => {
+    const author = get().currentAuthor;
+    if (!author) return;
+
     set((state) => ({
       ...state,
-      currentConversation: null,
+      currentConversation: createNewConversation(author),
     }));
   },
 }));
