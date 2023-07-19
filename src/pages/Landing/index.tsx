@@ -5,13 +5,15 @@ import { ChatFeed } from '../../components/Chat/Feed';
 
 import styles from './index.module.css';
 
-export function LadingPage() {
+type LadgingPageProps = {
+  apiGateway: ApiLocalStorageGateway;
+  authGateway: AuthLocalStorageGateway;
+};
+
+export function LadingPage({ apiGateway, authGateway }: LadgingPageProps) {
   return (
     <div className={styles.chat_frame}>
-      <ChatFeed
-        authGateway={new AuthLocalStorageGateway()}
-        apiGateway={new ApiLocalStorageGateway()}
-      />
+      <ChatFeed apiGateway={apiGateway} authGateway={authGateway} />
     </div>
   );
 }

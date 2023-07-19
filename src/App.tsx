@@ -1,10 +1,18 @@
-import { useState } from 'react';
-import styles from './App.module.css';
+import { useRef, useState } from 'react';
+
+import { ApiLocalStorageGateway } from './gateways/api/ApiLocalStorage.gateway';
+import { AuthLocalStorageGateway } from './gateways/auth/AuthLocalStorage.gateway';
+
 import { LadingPage } from './pages/Landing';
 import { HistoryPage } from './pages/History';
 
+import styles from './App.module.css';
+
 function App() {
   const [page, setPage] = useState(1);
+
+  const api = useRef(new ApiLocalStorageGateway());
+  const auth = useRef(new AuthLocalStorageGateway());
 
   return (
     <div className={styles.container}>
@@ -23,8 +31,12 @@ function App() {
       </div>
 
       <div className={styles.tab_content}>
-        {page === 1 ? <LadingPage /> : null}
-        {page === 2 ? <HistoryPage /> : null}
+        {page === 1 ? (
+          <LadingPage apiGateway={api.current} authGateway={auth.current} />
+        ) : null}
+        {page === 2 ? (
+          <HistoryPage apiGateway={api.current} authGateway={auth.current} />
+        ) : null}
       </div>
     </div>
   );

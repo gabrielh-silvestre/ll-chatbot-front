@@ -47,6 +47,9 @@ export interface Conversation {
 
   author: Author;
   messages: (Message | OptionMessage | LinkMessage)[];
+
+  createdAt: Date;
+  finishedAt: Date | null;
 }
 
 export interface BotStore {

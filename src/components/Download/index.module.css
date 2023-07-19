@@ -1,0 +1,36 @@
+.download_btn {
+  background-color: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 4px;
+  color: #333;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: bold;
+  height: 32px;
+  line-height: 30px;
+  margin: 0;
+  padding: 0 15px;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  -webkit-transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.download_btn:hover {
+  background-color: #f5f5f5;
+  border-color: #d9d9d9;
+  color: #333;
+}
+
+.download_btn:active {
+  background-color: #f5f5f5;
+  border-color: #d9d9d9;
+  color: #333;
+}

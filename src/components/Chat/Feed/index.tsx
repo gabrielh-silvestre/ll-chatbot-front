@@ -6,6 +6,7 @@ import type {
   LinkMessage,
   OptionMessage,
   ChatInputMessage,
+  Conversation,
 } from '../../../utils/types';
 
 import { useBotStore } from '../../../store/botStore';
@@ -46,7 +47,12 @@ export function ChatFeed({ authGateway, apiGateway }: ChatFeedProps) {
   );
 
   const finish = async () => {
-    await apiGateway.saveConversation(currentConversation!); // only execute on "end" action
+    const conversation = JSON.parse(
+      JSON.stringify(currentConversation)
+    ) as Conversation;
+    conversation.finishedAt = new Date();
+
+    await apiGateway.saveConversation(conversation);
 
     endConversation();
   };
