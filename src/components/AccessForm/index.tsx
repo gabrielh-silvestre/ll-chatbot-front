@@ -1,4 +1,5 @@
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import { useState } from 'react';
 
 import type { IAuthGateway } from '../../gateways/auth/Auth.gateway.interface';
@@ -34,15 +35,23 @@ export function SignInForm({ authGateway }: SignInFormProps) {
   const onSubmit: SubmitHandler<SignInFormData> = async (data) => {
     const { email, password } = data;
 
-    if (isRegister) {
-      const newAuthor = await authGateway.signUp(email, password);
-      startConversation(newAuthor);
+    try {
+      if (isRegister) {
+        const newAuthor = await authGateway.signUp(email, password);
+        startConversation(newAuthor);
 
-      return;
+        return;
+      }
+
+      const author = await authGateway.signIn(email, password);
+      startConversation(author);
+    } catch (error: any) {
+      let message = 'An error occurred while authenticating';
+
+      if (error instanceof Error) message = error.message;
+
+      toast(message, { type: 'error' });
     }
-
-    const author = await authGateway.signIn(email, password);
-    startConversation(author);
   };
 
   return (

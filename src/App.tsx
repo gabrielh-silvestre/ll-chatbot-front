@@ -1,3 +1,4 @@
+import { ToastContainer, toast } from 'react-toastify';
 import { useRef, useState } from 'react';
 
 import { ApiLocalStorageGateway } from './gateways/api/ApiLocalStorage.gateway';
@@ -7,6 +8,7 @@ import { LadingPage } from './pages/Landing';
 import { HistoryPage } from './pages/History';
 
 import styles from './App.module.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const [page, setPage] = useState(1);
@@ -16,6 +18,12 @@ function App() {
 
   return (
     <div className={styles.container}>
+      <ToastContainer
+        autoClose={3000}
+        position={toast.POSITION.TOP_CENTER}
+        closeOnClick
+      />
+
       <div className={styles.header}>
         <div className={styles.tabs}>
           <div className={styles.tab} onClick={() => setPage(1)}>

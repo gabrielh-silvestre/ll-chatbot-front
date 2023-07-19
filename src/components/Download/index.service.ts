@@ -3,15 +3,15 @@ import { format } from 'date-fns';
 import type { Conversation } from '../../utils/types';
 
 export const transformToCSV = (data: Conversation[]) => {
-  const header = 'Conversation;ID;Finished at';
+  const header = 'Conversation;Finished at';
 
-  const csv = data.map((conversation) => {
-    const { author, id, finishedAt } = conversation;
+  const csv = data.map((conversation, i) => {
+    const { author, finishedAt } = conversation;
 
-    if (!finishedAt) return 'ERROR;ERROR;ERROR';
+    if (!finishedAt) return 'ERROR;ERROR';
 
-    const date = new Date(finishedAt);
-    return `Conversation ${author.name};${id};${format(date, 'dd/MM/yyyy HH:mm:ss')}`;
+    const date = format(new Date(finishedAt), 'dd/MM/yyyy HH:mm');
+    return `Conversation ${author.name} #${i + 1};${date}`;
   });
 
   return [header, ...csv].join('\n');
