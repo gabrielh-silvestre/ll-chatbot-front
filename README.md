@@ -108,7 +108,7 @@ Alternatively, you can use the Docker image to run the web chatbot. Follow the s
 2. Run a container using the pulled image:
 
    ```bash
-   docker run -p 5173:5173 ll-chatbot
+   docker run --rm -p 5173:5173 ll-chatbot
    ```
 
 3. Open your web browser and visit `http://localhost:5173` to access the web chatbot.
